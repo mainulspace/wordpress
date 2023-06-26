@@ -1,80 +1,79 @@
-( function( $ ) {
-
+(function($) {
 	"use strict";
-	
-	//Attach sortable to the tbody, NOT tr
-	var tbody = $(".story_list_cont #sorted_list");
-	
+
+	// Attach sortable to the tbody, NOT tr
+	var tbody = $(".story_list_cont #sorted_list"),
+		tbody1 = $(".top_story_list_cont #top_stories_sorted_list"),
+		tbody2 = $(".story_list_cont #un_sorted_list");
+
 	tbody.sortable({
 		cursor: "move",
-		connectWith: ".sort_list", 
-	    update: function (event, ui) {
-	        
-	    }
+		connectWith: ".sort_list",
+		update: function(event, ui) {
+			// Update logic
+		}
 	});
 
-	//Attach sortable to the tbody, NOT tr
-	var tbody1 = $(".top_story_list_cont #top_stories_sorted_list");
-	
 	tbody1.sortable({
 		cursor: "move",
-		connectWith: ".sort_list", 
-	    update: function (event, ui) {
-	        
-	    }
+		connectWith: ".sort_list",
+		update: function(event, ui) {
+			// Update logic
+		}
 	});
 
-	var tbody2 = $(".story_list_cont #un_sorted_list");
-	
 	tbody2.sortable({
 		cursor: "move",
-		connectWith: ".sort_list", 
-	    update: function (event, ui) {
-	        
-	    }
+		connectWith: ".sort_list",
+		update: function(event, ui) {
+			// Update logic
+		}
 	});
 
-	$('.sortable_submit').on('click', function(e){
-		$('#sort_loading').css('display','block');
-		$('.sort_updated').css('display','none');
-		$('.sort_error').css('display','none');	
-		data.sort = tbody.sortable('toArray');
+	$('.sortable_submit').on('click', function(e) {
+		e.preventDefault();
+
+		var data = {
+			sort: tbody.sortable('toArray')
+		};
+
+		$('#sort_loading').css('display', 'block');
+		$('.sort_updated').css('display', 'none');
+		$('.sort_error').css('display', 'none');
 
 		$.post(ajaxurl, data)
-		.done(function(response) {
-				$('#sort_loading').css('display','none');
-				$('.sort_updated').css('display','block');				
-			}).fail(function() {
-				$('#sort_loading').css('display','none');
-				$('.sort_error').css('display','block');				
+			.done(function(response) {
+				$('#sort_loading').css('display', 'none');
+				$('.sort_updated').css('display', 'block');
+			})
+			.fail(function() {
+				$('#sort_loading').css('display', 'none');
+				$('.sort_error').css('display', 'block');
 			});
-		top_stories_data.sort = tbody1.sortable('toArray');
+
+		var top_stories_data = {
+			sort: tbody1.sortable('toArray')
+		};
 
 		$.post(ajaxurl, top_stories_data)
-		.done(function(response) {
-				$('#sort_loading').css('display','none');
-				$('.sort_updated').css('display','block');				
-			}).fail(function() {
-				$('#sort_loading').css('display','none');
-				$('.sort_error').css('display','block');				
+			.done(function(response) {
+				$('#sort_loading').css('display', 'none');
+				$('.sort_updated').css('display', 'block');
+			})
+			.fail(function() {
+				$('#sort_loading').css('display', 'none');
+				$('.sort_error').css('display', 'block');
 			});
 	});
 
-	$('.st_delete').bind('click', function () {
-	    $(this).parent().remove();
+	$('.st_delete').on('click', function() {
+		$(this).parent().remove();
 	});
-	
 
 	var options = {
-	    valueNames: [ 'story-title', 'postedDate' ]
+		valueNames: ['story-title', 'postedDate']
 	};
 
 	var recentstorieList = new List('recentstories', options);
 
-})( jQuery );
-
-
-
-
-
-
+})(jQuery);
