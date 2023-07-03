@@ -37,104 +37,26 @@ function add_stylesheets_and_scripts_to_story($page) {
     }
 }
 
-// Save top stories AJAX request
-add_action('wp_ajax_top-stories-sort', 'sort_top_stories');
+// Sort stories AJAX request
+add_action('wp_ajax_sort-stories', 'sort_stories');
 
-function sort_top_stories() {
+function sort_stories() {
     global $wpdb;
 
     if (!empty($_POST['action'])) {
         $data = array_map('sanitize_text_field', $_POST['sort']);
+        $story_type = $_POST['story_type'];
 
         // Remove old values
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 0 WHERE meta_key = %s", 'top_stories'));
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", 'top_stories_sort_order'));
+        remove_all_sort_values($story_type, $wpdb);
 
         foreach ($data as $k => $v) {
             $id = ltrim($v, 'post-'); // Trim the "post-" prefix from the ID
             $index = ($k + 1); // Make sure our sorting index starts at #1
 
             // Update
-            update_post_meta($id, 'top_stories', 1);
-            update_post_meta($id, 'top_stories_sort_order', $index);
-        }
-    }
-
-    exit();
-}
-
-// Featured stories sort
-add_action('wp_ajax_featured-stories-sort', 'sort_featured_stories');
-
-function sort_featured_stories() {
-    global $wpdb;
-
-    if (!empty($_POST['action'])) {
-        $data = array_map('sanitize_text_field', $_POST['sort']);
-
-        // Remove old values
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 0 WHERE meta_key = %s", 'featured_stories'));
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", 'featured_stories_sort_order'));
-
-        foreach ($data as $k => $v) {
-            $id = ltrim($v, 'post-'); // Trim the "post-" prefix from the ID
-            $index = ($k + 1); // Make sure our sorting index starts at #1
-
-            // Update
-            update_post_meta($id, 'featured_stories', 1);
-            update_post_meta($id, 'featured_stories_sort_order', $index);
-        }
-    }
-
-    exit();
-}
-
-// Worth reading sort
-add_action('wp_ajax_worth-reading-sort', 'sort_worth_reading');
-
-function sort_worth_reading() {
-    global $wpdb;
-
-    if (!empty($_POST['action'])) {
-        $data = array_map('sanitize_text_field', $_POST['sort']);
-
-        // Remove old values
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 0 WHERE meta_key = %s", 'worth_reading'));
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", 'worth_reading_stories_sort_order'));
-
-        foreach ($data as $k => $v) {
-            $id = ltrim($v, 'post-'); // Trim the "post-" prefix from the ID
-            $index = ($k + 1); // Make sure our sorting index starts at #1
-
-            // Update
-            update_post_meta($id, 'worth_reading', 1);
-            update_post_meta($id, 'worth_reading_stories_sort_order', $index);
-        }
-    }
-
-    exit();
-}
-
-// Latest story sort
-add_action('wp_ajax_latest-story-sort', 'sort_latest_story');
-
-function sort_latest_story() {
-    global $wpdb;
-
-    if (!empty($_POST['action'])) {
-        $data = array_map('sanitize_text_field', $_POST['sort']);
-
-        // Remove old values
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 0 WHERE meta_key = %s", 'latest_story'));
-        $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", 'latest_stories_sort_order'));
-
-        foreach ($data as $k => $v) {
-            $id = ltrim($v, 'post-'); // Trim the "post-" prefix from the ID
-            $index = ($k + 1); // Make sure our sorting index starts at #1
-
-            // Update
-            update_post_meta($id, 'latest_story', 1);
-            update_post_meta($id, 'latest_stories_sort_order', $index);
+            update_post_meta($id, $story_type, 1);
+            update_post_meta($id, "{$story_type}_sort_order", $index);
         }
     }
 
@@ -142,9 +64,7 @@ function sort_latest_story() {
 }
 
 // Remove old values
-function remove_all_sort_values($stories, $sort_order) {
-    global $wpdb;
-
-    $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 15 WHERE meta_key = %s", $stories));
-    $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", $sort_order));
+function remove_all_sort_values($story_type, $wpdb) {
+    $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 0 WHERE meta_key = %s", $story_type));
+    $wpdb->query($wpdb->prepare("UPDATE $wpdb->postmeta SET meta_value = 999 WHERE meta_key = %s", "{$story_type}_sort_order"));
 }
