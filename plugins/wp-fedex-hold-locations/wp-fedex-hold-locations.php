@@ -1,26 +1,22 @@
 <?php
-
 require_once 'mapquest.php';
 
 /**
  * Plugin Name: WP Fedex Hold Locations
- * Plugin URI:
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Shows nearest Fedex Hold Locations to choose from for shipping.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
  * Author URI: https://github.com/mmainulhasan
  */
 
-/**
- * Add Fedex hold location fields
- */
 add_action('wp_fedex_hold_fields', 'wp_fedex_hold_field');
 
 function wp_fedex_hold_field($checkout)
 {
     global $woocommerce;
     echo '<div id="wp_fedex_field_wrapper">';
-
+    
     woocommerce_form_field('fedex_hold_location', array(
         'required' => true,
         'type' => 'select',
@@ -34,21 +30,15 @@ function wp_fedex_hold_field($checkout)
     echo '</div>';
 }
 
-/**
- * Process the checkout
- */
 add_action('woocommerce_after_checkout_validation', 'wp_checkout_field_validation', 10, 2);
 
 function wp_checkout_field_validation($fields, $errors)
 {
-    // Customer must select at least one shipping method (fedex or personal)
-
     if (!$_POST['ship_to_different_address'] && empty($_POST['fedex_hold_location'])) {
         $errors->add('validation', 'Choose your <strong>Fedex Hold Location</strong> from drop-down menu or enter your <strong>personal shipping address</strong>.');
     }
 
     if (!$_POST['ship_to_different_address']) {
-        // Fedex shipment
         if (empty(trim($_POST['shipping_first_name']))) {
             $errors->add('validation', '<strong>Shipping First Name</strong> is a required field');
         }
@@ -63,9 +53,6 @@ function wp_checkout_field_validation($fields, $errors)
     }
 }
 
-/**
- * Update the order meta with field value
- */
 add_action('woocommerce_checkout_update_order_meta', 'wp_checkout_field_update_order_meta');
 
 function wp_checkout_field_update_order_meta($order_id)
@@ -75,9 +62,6 @@ function wp_checkout_field_update_order_meta($order_id)
     }
 }
 
-/**
- * If customer chooses personal shipping address, then hide Fedex hold location drop-down list.
- */
 add_action('wp_footer', 'wp_swap_visibility_of_shipping_options');
 
 function wp_swap_visibility_of_shipping_options()
@@ -114,35 +98,32 @@ function wp_swap_visibility_of_shipping_options()
 
                         shippingFieldsHeading.text('Shipping to');
 
-                        if(!$.trim(shippingFirstName.val()).length) {
+                        if (!shippingFirstName.val().trim()) {
                             shippingFirstName.val(billingFirstName.val());
                         }
-                        if(!$.trim(shippingLastName.val()).length) {
+                        if (!shippingLastName.val().trim()) {
                             shippingLastName.val(billingLastName.val());
                         }
-                        if(!$.trim(shippingAddress1.val()).length) {
+                        if (!shippingAddress1.val().trim()) {
                             shippingAddress1.val(billingAddress1.val());
                         }
-                        if(!$.trim(shippingAddress2.val()).length) {
+                        if (!shippingAddress2.val().trim()) {
                             shippingAddress2.val(billingAddress2.val());
                         }
-                        if(!$.trim(shippingCity.val()).length) {
+                        if (!shippingCity.val().trim()) {
                             shippingCity.val(billingCity.val());
                         }
-                        if(!$.trim(shippingState.val()).length) {
+                        if (!shippingState.val().trim()) {
                             shippingState.val(billingStateValue);
                             shippingState.trigger('change');
                         }
-                        if(!$.trim(shippingPostCode.val()).length) {
+                        if (!shippingPostCode.val().trim()) {
                             shippingPostCode.val(billingPostCode.val());
                         }
                     } else {
                         $('#fedex_hold_location_field').show();
                         shippingFieldsHeading.text('Shipment to FedEx hold location');
                     }
-                });
-
-                $(document).on('update_checkout', function (param) {
                 });
             })(jQuery);
         </script>
@@ -167,9 +148,9 @@ function wp_load_fedex_locations()
 
                     var shippingPostCode = $.trim($('#shipping_postcode').val());
 
-                    if (isNaN(Number(shippingPostCode)) || shippingPostCode.length != 5) {
+                    if (isNaN(Number(shippingPostCode)) || shippingPostCode.length !== 5) {
                         $('#shipping_postcode').css('backgroundColor', '#fcf6d5');
-                        alert("Please enter numeric 5 digit shipping zip code above.");
+                        alert("Please enter a numeric 5 digit shipping zip code above.");
                         return false;
                     }
 
@@ -184,7 +165,6 @@ function wp_load_fedex_locations()
                     $.post(ajax_url, {action: 'load_fedex_locations', postData}, function (returnData) {
                         self.prop('disabled', false);
                         if (returnData.length) {
-
                             var nearestLocation = returnData[0];
                             var nearestLocationParts = nearestLocation.split(',');
                             var nearestLocationState = $.trim(nearestLocationParts[nearestLocationParts.length - 2]);
@@ -194,12 +174,14 @@ function wp_load_fedex_locations()
                             $('#fedex_hold_location').prev('.nearest-location').remove();
                             $('#fedex_hold_location option:gt(0)').remove();
                             $('#fedex_hold_location').before('<div class="nearest-location"><p><strong>Nearest pickup location:</strong></p><h1 class="heading-font">' + returnData[0] + '</h1></div>');
+
                             for (var i = 0; i < returnData.length; i++) {
                                 $('#fedex_hold_location').append($('<option>', {
                                     value: returnData[i],
                                     text: returnData[i]
                                 }));
                             }
+
                             $('#fedex_hold_location option').eq(1).prop('selected', true);
                             $(document.body).trigger('update_checkout');
                         } else {
@@ -210,7 +192,7 @@ function wp_load_fedex_locations()
 
                 $(document).ready(function() {
                     var shippingPostCode = $.trim($('#shipping_postcode').val());
-                    if(shippingPostCode.length) {
+                    if (shippingPostCode.length) {
                         $('#load-fedex-locations').trigger('click');
                     }
                 });
@@ -250,11 +232,11 @@ function load_fedex_locations()
 
     header('Content-Type: application/json');
     echo json_encode($nearby_locations);
-
     exit;
 }
 
-// https://stackoverflow.com/questions/53152285/refresh-cached-shipping-methods-on-checkout-update-ajax-event-in-woocommerce
+add_action('woocommerce_checkout_update_order_review', 'wp_always_reload_shipping_rate');
+
 function wp_always_reload_shipping_rate($post_data)
 {
     $packages = WC()->cart->get_shipping_packages();
@@ -266,16 +248,14 @@ function wp_always_reload_shipping_rate($post_data)
     }
 }
 
-add_action('woocommerce_checkout_update_order_review', 'wp_always_reload_shipping_rate');
-
-
-function wp_get_order_items_json_str($order_id) {
+function wp_get_order_items_json_str($order_id)
+{
     $order = wc_get_order($order_id);
     $order_items = $order->get_items();
 
     $order_items_array = array();
 
-    foreach($order_items as $order_item) {
+    foreach ($order_items as $order_item) {
         $order_item_str = $order_item->get_quantity() . ' x ' . $order_item->get_name() . ' - ' . get_post_meta($order_item->get_product_id(), 'scientific_name', true);
         array_push($order_items_array, $order_item_str);
     }
@@ -284,9 +264,8 @@ function wp_get_order_items_json_str($order_id) {
     return $order_items_json_str;
 }
 
-
-
 add_action('woocommerce_checkout_order_processed', 'wp_post_process_shipping_info', 10, 3);
+
 function wp_post_process_shipping_info($order_id, $posted_data, $order)
 {
     global $wpdb;
@@ -295,13 +274,13 @@ function wp_post_process_shipping_info($order_id, $posted_data, $order)
 
     $delivery_date = sanitize_text_field(trim($_POST['wp_delivery_date']));
 
-    if ( isset($_POST['ship_to_different_address']) && $_POST['ship_to_different_address'] == 1 ) {
+    if (isset($_POST['ship_to_different_address']) && $_POST['ship_to_different_address'] == 1) {
         $shipping_type = 'personal';
     } else {
         $shipping_type = 'fedex';
     }
 
-    if ( $shipping_type == 'fedex' && !empty( $_POST['fedex_hold_location'] ) ) {
+    if ($shipping_type == 'fedex' && !empty($_POST['fedex_hold_location'])) {
         $fedex_hold_location = sanitize_text_field($_POST['fedex_hold_location']);
         $fedex_hold_location_array = explode(',', $fedex_hold_location);
 
@@ -320,7 +299,6 @@ function wp_post_process_shipping_info($order_id, $posted_data, $order)
         $order->save();
     }
 
-    // Re-fetch to make sure updated order data
     $order = wc_get_order($order_id);
 
     $fedex_order = array(
@@ -349,7 +327,7 @@ function wp_post_process_shipping_info($order_id, $posted_data, $order)
         'order_items' => wp_get_order_items_json_str($order_id),
     );
 
-    if ( $shipping_type == 'fedex' ) {
+    if ($shipping_type == 'fedex') {
         $fedex_order['hold'] = 1;
         $fedex_order['shipping_location_type'] = 'fedex_ship_center';
         $fedex_order['delivery_type'] = 'fedex_standard_overnight';
@@ -365,9 +343,6 @@ function wp_post_process_shipping_info($order_id, $posted_data, $order)
         $fedex_order['is_saturday_delivery'] = 0;
     }
 
-    // Instead of using wpdb->prefix the table name is hardcoded here. Because even if we can change table prefix,
-    // but Fedex will not update their code without any good reason.
-
     $already_inserted = $wpdb->get_results('SELECT id FROM wp_orders_fedex WHERE wc_order_id = ' . $order->get_id());
 
     if (!$already_inserted) {
@@ -380,12 +355,13 @@ function wp_post_process_shipping_info($order_id, $posted_data, $order)
 
 add_action('save_post', 'wp_action_save_post');
 
-function wp_action_save_post($post_id) {
+function wp_action_save_post($post_id)
+{
     global $wpdb;
 
     $post_type = get_post_type($post_id);
 
-    if(
+    if (
         is_admin()
         && $post_type == 'shop_order'
         && isset($_POST['action']) && $_POST['action'] == 'editpost'
@@ -410,11 +386,10 @@ function wp_action_save_post($post_id) {
     }
 }
 
-/**
- * Allow admin to change hold / not hold
- */
 add_action('acf/save_post', 'wp_admin_change_is_fedex_hold', 10, 3);
-function wp_admin_change_is_fedex_hold($post_id) {
+
+function wp_admin_change_is_fedex_hold($post_id)
+{
     global $wpdb;
     $post = get_post($post_id);
     if (is_admin() && $post->post_type == 'shop_order') {
@@ -435,11 +410,10 @@ function wp_admin_change_is_fedex_hold($post_id) {
     }
 }
 
-/**
- * Allow admin to change saturday priority delivery
- */
 add_action('acf/save_post', 'wp_admin_change_is_saturday_priority', 10, 3);
-function wp_admin_change_is_saturday_priority($post_id) {
+
+function wp_admin_change_is_saturday_priority($post_id)
+{
     global $wpdb;
     $post = get_post($post_id);
     if (is_admin() && $post->post_type == 'shop_order') {
@@ -462,7 +436,6 @@ function wp_admin_change_is_saturday_priority($post_id) {
                 array('wc_order_id' => $post_id)
             );
         }
-
-        
     }
 }
+?>
