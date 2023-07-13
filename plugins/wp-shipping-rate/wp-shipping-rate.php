@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Shipping Rate
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Set shipping rate based on subtotal.
  * Version: 0.1
  * Author: Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul
+ * Author URI: https://github.com/mmainulhasan
  */
 
 

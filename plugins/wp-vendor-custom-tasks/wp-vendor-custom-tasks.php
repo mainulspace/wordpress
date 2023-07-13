@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP_Site Vendor Tasks
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Perform all a set of vendor tasks
  * Version: 0.1
  * Author:  Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul
+ * Author URI: https://github.com/mmainulhasan
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

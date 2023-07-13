@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Vendor Status Update Bulk Orders
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Will update vendor status for multiple orders.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI:  https://github.com/m-mainul
+ * Author URI:  https://github.com/mmainulhasan
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Vendor Export
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Will export Processing Today order list for Vendor.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul
+ * Author URI: https://github.com/mmainulhasan
  */
 
 add_action( 'admin_menu', 'wp_vendor_export_menu' );

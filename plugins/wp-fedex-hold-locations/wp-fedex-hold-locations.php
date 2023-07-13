@@ -8,7 +8,7 @@ require_once 'mapquest.php';
  * Description: Shows nearest Fedex Hold Locations to choose from for shipping.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan
+ * Author URI: https://github.com/mmainulhasan
  */
 
 /**

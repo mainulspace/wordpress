@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Static Products
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Display list of static products.
  * Version: 0.1
  * Author: Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul
+ * Author URI: https://github.com/mmainulhasan
  */
 
 add_action( 'admin_menu', 'wp_fedex_static_products' );

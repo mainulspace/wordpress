@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Update Vendor Order Status
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Update Vendor Order Status in Woocommerce and Vendor Database.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul
+ * Author URI: https://github.com/mmainulhasan
  */
 
 // Exit if accessed directly

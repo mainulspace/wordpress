@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: WP Fedex Table View
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Just display Fedex Order Table view.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan
+ * Author URI: https://github.com/mmainulhasan
  */
 
 add_action( 'admin_menu', 'wp_fedex_order_view_menu' );

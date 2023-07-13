@@ -5,7 +5,7 @@
  * Description: Pushes eBay order to Vendor and Fedex. And sends an email to customer about delivery date.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan
+ * Author URI: https://github.com/mmainulhasan
  */
 
 // Load WordPress without theme support.

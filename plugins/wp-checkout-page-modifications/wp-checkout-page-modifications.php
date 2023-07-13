@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Wp Site Checkout Page Modifications
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Modifies default looks of checkout pages.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan
+ * Author URI: https://github.com/mmainulhasan
  */
 
 add_filter('woocommerce_checkout_fields', 'custom_override_checkout_fields');

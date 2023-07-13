@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WP Guarantee
- * Plugin URI: https://github.com/m-mainul/wordpress
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Create guarantee options.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan
+ * Author URI: https://github.com/mmainulhasan
  */
 
 // Exit if accessed directly

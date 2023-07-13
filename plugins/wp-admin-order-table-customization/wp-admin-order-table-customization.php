@@ -5,7 +5,7 @@
  * Description: Add new columns in order table
  * Version: 1.0
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
- * Author URI: https://github.com/m-mainul-hasan/wordpress
+ * Author URI: https://github.com/mmainulhasan/wordpress
  */
 
 
