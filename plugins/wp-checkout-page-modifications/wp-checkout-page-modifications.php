@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Wp Site Checkout Page Modifications
+ * Plugin Name: WP Site Checkout Page Modifications
  * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Modifies default looks of checkout pages.
  * Version: 0.1
@@ -8,9 +8,9 @@
  * Author URI: https://github.com/mmainulhasan
  */
 
-add_filter('woocommerce_checkout_fields', 'custom_override_checkout_fields');
+add_filter('woocommerce_checkout_fields', 'wp_override_checkout_fields');
 
-function custom_override_checkout_fields($fields)
+function wp_override_checkout_fields($fields)
 {
     // Change billing fields
     $fields['billing']['billing_city']['class'][0] = 'form-row-first';
@@ -33,15 +33,13 @@ function custom_override_checkout_fields($fields)
     return $fields;
 }
 
+add_action('wp_footer', 'reposition_shipping_fields_on_checkout');
 
-add_action('wp_footer', 'wp_reposition_billing_email_field');
-
-function wp_reposition_billing_email_field()
+function reposition_shipping_fields_on_checkout()
 {
     if (is_checkout()) {
         ?>
         <script>
-            
             // Reposition some shipping fields
             var shippingFirstNameField = jQuery('#shipping_first_name_field');
             jQuery('#wp-shipping-detached-fields').append(shippingFirstNameField);
@@ -60,19 +58,15 @@ function wp_reposition_billing_email_field()
     }
 }
 
-/**
- * Process the checkout
- */
 add_action('woocommerce_checkout_process', 'wp_enforce_password_min_length');
 
 function wp_enforce_password_min_length()
 {
-    if (!is_user_logged_in() && strlen($_POST['account_password']) < 6) {
-        wc_add_notice(__('Please enter a <b>password with at least six digit</b>.'), 'error');
+    if (!is_user_logged_in() && strlen(trim($_POST['account_password'])) < 6) {
+        wc_add_notice(__('Please enter a <b>password with at least six digits</b>.'), 'error');
     }
 }
 
-// Update Ship to different address text, to make it extra clear, that customer can choose to different address instead of Fedex Hold Location, but it'll cost them extra $6.99.
 add_filter('gettext', 'wp_ship_to_different_address_translation', 20, 3);
 
 function wp_ship_to_different_address_translation($translated_text, $text, $domain)
@@ -85,16 +79,18 @@ function wp_ship_to_different_address_translation($translated_text, $text, $doma
     return $translated_text;
 }
 
-// Remove Hawaii, Armed Forces (AA, AE, AP) from states list
 add_filter('woocommerce_states', 'wp_remove_some_us_states');
 
-function wp_remove_some_us_states($states) {
+function wp_remove_some_us_states($states)
+{
     $non_allowed_us_states = array('HI', 'AA', 'AE', 'AP');
 
-    // Loop through your non allowed us states and remove them
-    foreach( $non_allowed_us_states as $state_code ) {
-        if( isset($states['US'][$state_code]) )
-            unset( $states['US'][$state_code] );
+    // Loop through non-allowed US states and remove them
+    foreach ($non_allowed_us_states as $state_code) {
+        if (isset($states['US'][$state_code])) {
+            unset($states['US'][$state_code]);
+        }
     }
+
     return $states;
 }
