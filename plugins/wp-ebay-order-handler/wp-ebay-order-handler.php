@@ -1,38 +1,35 @@
 <?php
 /**
  * Plugin Name: WP Ebay Order Handler
- * Plugin URI: 
+ * Plugin URI: https://github.com/mmainulhasan/wordpress
  * Description: Pushes eBay order to Vendor and Fedex. And sends an email to customer about delivery date.
  * Version: 0.1
  * Author: Mohammad Mainul Hasan (moh.mainul.hasan@gmail.com)
  * Author URI: https://github.com/mmainulhasan
  */
 
-// Load WordPress without theme support.
-define('WP_USE_THEMES', false);
-require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
-
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-function wp_ebay_get_order_items_json_str($order_id) {
+function wp_ebay_get_order_items_json_str($order_id)
+{
     $order = wc_get_order($order_id);
     $order_items = $order->get_items();
 
     $order_items_array = array();
 
-    foreach($order_items as $order_item) {
+    foreach ($order_items as $order_item) {
         $order_item_str = $order_item->get_quantity() . ' x ' . $order_item->get_name() . ' - ' . get_post_meta($order_item->get_product_id(), 'scientific_name', true);
-        array_push($order_items_array, $order_item_str);
+        $order_items_array[] = $order_item_str;
     }
 
     $order_items_json_str = json_encode($order_items_array);
     return $order_items_json_str;
 }
 
-
-function wp_ebay_get_delivery_date() {
+function wp_ebay_get_delivery_date()
+{
     // Get future dates based on today. So set today as base_date.
     $shipping_date = current_time('Y-m-d');
 
@@ -47,17 +44,17 @@ function wp_ebay_get_delivery_date() {
     $exclude_days = array(0, 1, 6);
 
     $excluded_dates = array(
-      '2019-05-28', 
-      '2019-07-04', 
-      '2019-07-05', 
-      '2019-09-03', 
-      '2019-11-28', 
-      '2019-11-29',
-      '2019-12-24',
-      '2019-12-25',
-      '2019-12-26',
-      '2019-01-02',
-	);
+        '2019-05-28',
+        '2019-07-04',
+        '2019-07-05',
+        '2019-09-03',
+        '2019-11-28',
+        '2019-11-29',
+        '2019-12-24',
+        '2019-12-25',
+        '2019-12-26',
+        '2019-01-02',
+    );
 
     $next_day_is_skipped = false;
 
@@ -67,14 +64,14 @@ function wp_ebay_get_delivery_date() {
         $shipping_date_obj = new DateTime($shipping_date);
         $interval = new DateInterval("P1D");
         // Increment shipping date. We don't do same day delivery.
-        $shipping_date_obj = $shipping_date_obj->add($interval); // Shipping date object is incremented.
+        $shipping_date_obj->add($interval); // Shipping date object is incremented.
 
         // We can't ship for next day for orders received after 7am EST
         // Next day shipping date needs to be cut off at 7am EST
         // Our server time is EST / EDT (when daylight saving is on). So we don't need to think about timezone here.
         // date('G')  = 24-hour format of an hour without leading zeros
         if (intval(current_time('G')) > 6 && !$next_day_is_skipped) {
-            $shipping_date_obj = $shipping_date_obj->add($interval); // Shipping date object is incremented.
+            $shipping_date_obj->add($interval); // Shipping date object is incremented.
             $next_day_is_skipped = true;
         }
         // Increment shipping_date so that loop can forward.
@@ -103,8 +100,6 @@ function wp_ebay_get_delivery_date() {
 add_action('woocommerce_new_order', 'wp_ebay_handle_ebay_order');
 function wp_ebay_handle_ebay_order($order_id)
 {
-    global $wpdb;
-
     $ebay_username = get_post_meta($order_id, '_codisto_ebayusername', true);
 
     if ($ebay_username) {
@@ -136,7 +131,7 @@ function wp_ebay_handle_ebay_order($order_id)
             $item->sku = $wc_product->get_sku();
             $item->qty = $order_item_product->get_quantity();
 
-            array_push($payload->items, $item);
+            $payload->items[] = $item;
         }
 
         // Send addcart api call to sdc
@@ -175,6 +170,7 @@ function wp_ebay_handle_ebay_order($order_id)
         );
 
         if ($response->status == 'error') {
+            global $wpdb;
             $wpdb->insert('wp_vendor_failed_orders', array('wc_order_id' => $order->get_id()));
         } else {
             $order->update_meta_data('_vendor_order_response', json_encode($response));
@@ -216,13 +212,14 @@ function wp_ebay_handle_ebay_order($order_id)
                 'order_items' => wp_ebay_get_order_items_json_str($order_id),
             );
 
+            global $wpdb;
             $wpdb->insert('wp_orders_fedex', $fedex_order);
 
             add_filter('wp_mail_content_type', function ($content_type) {
                 return 'text/html';
             });
 
-            add_filter('wp_mail_from_name', function($original_email_from) {
+            add_filter('wp_mail_from_name', function ($original_email_from) {
                 return 'WP Site';
             });
 
