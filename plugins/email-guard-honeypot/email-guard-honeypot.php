@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Email Guard & Honeypot Protection
- * Description: Smart email header fallback and invisible honeypot to block bot spam sitewide.
+ * Description: Blocks spam and prevents PHP mail() abuse. Sets safe FROM headers, injects honeypots into Contact Form 7 and comments, and includes test tools.
  */
 
 defined('ABSPATH') || exit; // Prevent direct access
@@ -9,30 +9,19 @@ defined('ABSPATH') || exit; // Prevent direct access
 // === Get Safe Site Email (contact@domain.com fallback) === //
 function get_site_safe_email() {
     $domain = parse_url(home_url(), PHP_URL_HOST);
-
-    // Ensure domain is safe
     $domain = preg_replace('/^www\./', '', strtolower($domain));
-
-    // Return dynamic contact address
     return 'contact@' . $domain;
 }
 
 // === Get Safe Admin Email (fallback) === //
 function get_fallback_from_email() {
     $admin_email = get_option('admin_email');
-
-    // Extract domain from admin email
     $domain = strtolower(substr(strrchr($admin_email, "@"), 1));
-
-    // Common public email providers to avoid
     $disallowed_domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'live.com'];
 
-    // If valid and domain is not in disallowed list, use admin email
     if (filter_var($admin_email, FILTER_VALIDATE_EMAIL) && !in_array($domain, $disallowed_domains)) {
         return $admin_email;
     }
-
-    // Otherwise fallback to contact@yourdomain.com
     return get_site_safe_email();
 }
 
@@ -58,10 +47,10 @@ add_filter('wp_mail_from_name', function($name) {
         : $name;
 });
 
-// === Block wp_mail() if honeypot triggered === //
+// === Block wp_mail() if honeypot is filled === //
 add_filter('wp_mail', function($args) {
     if (!empty($_POST['honeypot_field'])) {
-        error_log('Blocked bot email attempt via honeypot.');
+        error_log('❌ Blocked bot email attempt via honeypot.');
         return false;
     }
     return $args;
@@ -96,7 +85,7 @@ add_filter('preprocess_comment', function($commentdata) {
     return $commentdata;
 });
 
-// === Trigger Test Email via URL https://yourdomain.com/?send_test_email=1 === //
+// === Trigger Test Email via URL (admin only) https://yourdomain.com/?send_test_email=1 === //
 add_action('init', function () {
     if (
         isset($_GET['send_test_email']) &&
@@ -113,3 +102,11 @@ add_action('init', function () {
         exit($success ? '✅ Test email sent to admin email.' : '❌ Failed to send test email.');
     }
 });
+
+// === Block native PHP mail() if override is possible === //
+if (!function_exists('mail')) {
+    function mail() {
+        error_log('❌ mail() function blocked via plugin override.');
+        return false;
+    }
+}
