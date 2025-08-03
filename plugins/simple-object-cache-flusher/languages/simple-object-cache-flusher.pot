@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Object Cache Flusher 1.1\n"
+"Report-Msgid-Bugs-To: https://github.com/mainulspace/wordpress/tree/master/plugins/simple-object-cache-flusher/issues\n"
+"POT-Creation-Date: 2025-08-03 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WebDevStory Translation Export\\n"
+
+msgid "Flush Object Cache"
+msgstr ""
+
+msgid "Not allowed."
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Custom/Other"
+msgstr ""
+
+msgid "Not detected / Disabled"
+msgstr ""
+
+msgid "✅ Object cache flushed and verified successfully."
+msgstr ""
+
+msgid "⚠️ Cache flush attempted, but verification failed. Your cache backend may not support flush or is persisting values."
+msgstr ""
+
+msgid "Backend detected:"
+msgstr ""
+
+msgid "Flush Object Cache Now"
+msgstr ""
+
+msgid "This will clear Memcached/Redis/other object cache for this WordPress site."
+msgstr ""
+
+msgid "No object cache backend detected. You may not be using object caching."
+msgstr ""
